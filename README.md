@@ -10,7 +10,7 @@
 I will be using fiber web framework **https://pkg.go.dev/github.com/gofiber/fiber/v2**
 
 <h3 style="color:#33A8FF"> <u>Clone the project</u> </h3>
-`git clone https://github.com/titusdishon/go-ambassodar-app.git`
+`git clone https://github.com/titusdishon/go-shopping-app.git`
 
 
 <h3 style="color:#33A8FF"><u>With all the prerequisites installed:</u></h3>
@@ -94,7 +94,7 @@ Configure your services like mysql, application
             image: mysql:5.7.22
             restart: always
             environment:
-            MYSQL_DATABASE: ambassador
+            MYSQL_DATABASE: db_name
             MYSQL_USER: root
             MYSQL_PASSWORD: root
             MYSQL_ROOT_PASSWORD: root
@@ -138,3 +138,8 @@ func main() {
 
 When you open your the address [http://localhost:8080/](http://localhost:8080/) on your browser you should serr the words `Hi there`
 For more quick introduction to go please visit the link [go documentation](https://golang.org/doc/)
+
+
+### Run command inside the docker container 
+`docker-compose exec backend sh `
+`exit` to exit the docker container shell 

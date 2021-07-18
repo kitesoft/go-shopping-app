@@ -1,8 +1,8 @@
 package main
 
 import (
-	"ambassodor/src/database"
-	"ambassodor/src/routes"
+	"shop/src/database"
+	"shop/src/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
