@@ -7,6 +7,9 @@ services:
       - 9000:9000
     volumes:
       - .:/app
+    depends_on:
+      - db
+      - redis
   # database connection and creation
   db:
     image: mysql:5.7.22
@@ -21,3 +24,8 @@ services:
       # map mysql port to a different port
     ports:
       - 33066:3306
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379

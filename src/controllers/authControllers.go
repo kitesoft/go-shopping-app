@@ -4,10 +4,9 @@ import (
 	"shop/src/database"
 	"shop/src/middlewares"
 	"shop/src/models"
-	"strconv"
+	"strings"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -29,7 +28,7 @@ func Register(c *fiber.Ctx) error {
 		FirstName:    data["first_name"],
 		LastName:     data["last_name"],
 		Email:        data["email"],
-		IsAmbassador: false,
+		IsAmbassador: strings.Contains(c.Path(), "/api/ambassador"),
 	}
 	user.SetPassword(data["password"])
 	database.DB.Create(&user)
@@ -57,11 +56,22 @@ func Login(c *fiber.Ctx) error {
 			"message": "Wrong password",
 		})
 	}
-	payload := jwt.StandardClaims{
-		Subject:   strconv.Itoa(int(user.Id)),
-		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+	isAmbassodar := strings.Contains(c.Path(), "/api/ambassador")
+	var scope string
+	if isAmbassodar {
+		scope = "ambassador"
+	} else {
+		scope = "admin"
 	}
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret-key"))
+
+	if !isAmbassodar && user.IsAmbassador {
+		return c.JSON(
+			fiber.Map{
+				"message": "unauthorized",
+			})
+	}
+	token, err := middlewares.GenerateJWT(user.Id, scope)
+
 	if err != nil {
 		c.Status(fiber.StatusBadRequest)
 		return c.JSON(fiber.Map{
@@ -83,6 +93,14 @@ func Login(c *fiber.Ctx) error {
 func User(c *fiber.Ctx) error {
 	id, _ := middlewares.GetUserId(c)
 	var user models.User
+	//get user from the database
+	database.DB.Where("id = ?", id).First(&user)
+	//calculate the user revenue based on the type of the user
+	if strings.Contains(c.Path(), "/api/ambassador") {
+		ambassador := models.Ambassador(user)
+		ambassador.CalculateRevenue(database.DB)
+		return c.JSON(ambassador)
+	}
 	database.DB.Where("id=?", id).First(&user)
 	return c.JSON(user)
 }
@@ -102,6 +120,7 @@ func Logout(c *fiber.Ctx) error {
 
 func UpdateProfile(c *fiber.Ctx) error {
 	var data map[string]string
+
 	if err := c.BodyParser(&data); err != nil {
 		return err
 	}
