@@ -10,6 +10,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Register func creates a new user.
+// @Description create a new user.
+// @Summary create a user
+// @Tags User, Ambassador
+// @Accept json
+// @Produce json
+// @Param user_attrs body models.User true "User attributes"
+// @Success 200 {object} models.User
+// @Router /admin/register [post]
 func Register(c *fiber.Ctx) error {
 	var data map[string]string
 	if err := c.BodyParser(&data); err != nil {
@@ -35,6 +44,15 @@ func Register(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
+// Register func logs in a user
+// @Description login user.
+// @Summary login to your account
+// @Tags User, Ambassador
+// @Accept json
+// @Produce json
+// @Param user_login_attrs body models.UserLogin true "User login credentials"
+// @Success 200 {object} models.UserLogin
+// @Router /admin/login [post]
 func Login(c *fiber.Ctx) error {
 	var data map[string]string
 	if err := c.BodyParser(&data); err != nil {
@@ -87,9 +105,18 @@ func Login(c *fiber.Ctx) error {
 	c.Cookie(&cookie)
 	return c.JSON(fiber.Map{
 		"message": "success",
+		"user":    user,
 	})
 }
 
+// Register func get user details
+// @Description Get user profile details.
+// @Summary Get your profile details
+// @Tags User, Ambassador
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.User
+// @Router /admin/user [get]
 func User(c *fiber.Ctx) error {
 	id, _ := middlewares.GetUserId(c)
 	var user models.User
@@ -105,6 +132,14 @@ func User(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
+// Register funclogout user
+// @Description logout from your account.
+// @Summary Logout when done, you do not need to send any data
+// @Tags User, Ambassador
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Success
+// @Router /admin/logout [post]
 func Logout(c *fiber.Ctx) error {
 	cookie := fiber.Cookie{
 		Name:     "jwt",
@@ -118,6 +153,15 @@ func Logout(c *fiber.Ctx) error {
 	})
 }
 
+// Register func update profile.
+// @Description update profile.
+// @Summary Update profile
+// @Tags User, Ambassador
+// @Accept json
+// @Produce json
+// @Param user_attrs body models.User true "User profile attributes"
+// @Success 200 {object} models.User
+// @Router /admin/update [put]
 func UpdateProfile(c *fiber.Ctx) error {
 	var data map[string]string
 
@@ -137,6 +181,15 @@ func UpdateProfile(c *fiber.Ctx) error {
 
 }
 
+// Register func update password.
+// @Description update password.
+// @Summary Update password
+// @Tags User, Ambassador
+// @Accept json
+// @Produce json
+// @Param user_attrs body models.ChangePasswordRequest true "Password attributes"
+// @Success 200 {object} models.ChangePasswordRequest
+// @Router /admin/update-password [put]
 func UpdatePassword(c *fiber.Ctx) error {
 	var data map[string]string
 	if err := c.BodyParser(&data); err != nil {

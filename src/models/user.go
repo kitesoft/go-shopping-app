@@ -14,6 +14,10 @@ type User struct {
 	IsAmbassador bool     `json:"-"`
 	Revenue      *float64 `json:"revenue,omitempty" gorm:"-"`
 }
+type UserLogin struct {
+	Email    string `json:"email" gorm:"unique"`
+	Password string `json:"password"`
+}
 
 func (user *User) SetPassword(password string) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), 12)
@@ -22,6 +26,10 @@ func (user *User) SetPassword(password string) {
 
 func (user *User) ComparePassword(password string) error {
 	return bcrypt.CompareHashAndPassword(user.Password, []byte(password))
+}
+
+func (user *User) Name() string {
+	return user.FirstName + " " + user.LastName
 }
 
 //creating aliases

@@ -1,0 +1,336 @@
+basePath: /api
+definitions:
+  models.ChangePasswordRequest:
+    properties:
+      confirm_password:
+        type: string
+      password:
+        type: string
+    type: object
+  models.Link:
+    properties:
+      code:
+        type: string
+      id:
+        type: integer
+      order:
+        items:
+          $ref: '#/definitions/models.Order'
+        type: array
+      products:
+        items:
+          $ref: '#/definitions/models.Product'
+        type: array
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: integer
+    type: object
+  models.Order:
+    properties:
+      address:
+        type: string
+      ambassador_email:
+        type: string
+      city:
+        type: string
+      code:
+        type: string
+      country:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      order_item:
+        items:
+          $ref: '#/definitions/models.OrderItem'
+        type: array
+      total:
+        type: number
+      transaction_id:
+        type: string
+      user_id:
+        type: integer
+      zip:
+        type: string
+    type: object
+  models.OrderItem:
+    properties:
+      admin_revenue:
+        type: number
+      ambassodar_revenue:
+        type: number
+      id:
+        type: integer
+      order _id:
+        type: integer
+      price:
+        type: number
+      product_title:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  models.Product:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+      title:
+        type: string
+    type: object
+  models.Success:
+    properties:
+      message:
+        type: string
+    type: object
+  models.User:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      revenue:
+        type: number
+    type: object
+  models.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+info:
+  contact:
+    email: your@mail.com
+    name: API Support
+  description: This is an auto-generated API Docs.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: API
+  version: "1.0"
+paths:
+  /admin/login:
+    post:
+      consumes:
+      - application/json
+      description: login user.
+      parameters:
+      - description: User login credentials
+        in: body
+        name: user_login_attrs
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserLogin'
+      summary: login to your account
+      tags:
+      - User
+      - Ambassador
+  /admin/logout:
+    post:
+      consumes:
+      - application/json
+      description: logout from your account.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Success'
+      summary: Logout when done, you do not need to send any data
+      tags:
+      - User
+      - Ambassador
+  /admin/register:
+    post:
+      consumes:
+      - application/json
+      description: create a new user.
+      parameters:
+      - description: User attributes
+        in: body
+        name: user_attrs
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: create a user
+      tags:
+      - User
+      - Ambassador
+  /admin/update:
+    put:
+      consumes:
+      - application/json
+      description: update profile.
+      parameters:
+      - description: User profile attributes
+        in: body
+        name: user_attrs
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Update profile
+      tags:
+      - User
+      - Ambassador
+  /admin/update-password:
+    put:
+      consumes:
+      - application/json
+      description: update password.
+      parameters:
+      - description: Password attributes
+        in: body
+        name: user_attrs
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ChangePasswordRequest'
+      summary: Update password
+      tags:
+      - User
+      - Ambassador
+  /admin/user:
+    get:
+      consumes:
+      - application/json
+      description: Get user profile details.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Get your profile details
+      tags:
+      - User
+      - Ambassador
+  /admin/users/{id}/links:
+    get:
+      consumes:
+      - application/json
+      description: get all the links.
+      parameters:
+      - description: Link code
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Link'
+      summary: get all the links.
+      tags:
+      - User
+  /ambassador/stats:
+    get:
+      consumes:
+      - application/json
+      description: get all the stats.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+      summary: get all the stats.
+      tags:
+      - Ambassador
+    post:
+      consumes:
+      - application/json
+      description: crete link.
+      parameters:
+      - description: Link attributes
+        in: body
+        name: link
+        required: true
+        schema:
+          $ref: '#/definitions/models.Link'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Link'
+      summary: create link the stats.
+      tags:
+      - Ambassador
+  /checkout/links/{code}:
+    get:
+      consumes:
+      - application/json
+      description: get all the links.
+      parameters:
+      - description: Link code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Link'
+      summary: get all the links.
+      tags:
+      - Checkout
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

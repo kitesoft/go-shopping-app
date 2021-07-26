@@ -1,6 +1,7 @@
 package routes
 
 import (
+	_ "shop/docs"
 	"shop/src/controllers"
 	"shop/src/middlewares"
 
@@ -8,6 +9,7 @@ import (
 )
 
 func Setup(app *fiber.App) {
+
 	api := app.Group("api")
 	admin := api.Group("admin")
 	admin.Post("register", controllers.Register)
@@ -30,15 +32,19 @@ func Setup(app *fiber.App) {
 	ambassador.Post("register", controllers.Register)
 	ambassador.Post("login", controllers.Login)
 	ambassador.Get("products/frontend", controllers.ProductFrontend)
+	ambassador.Get("products/backend", controllers.ProductBackend)
 	ambassadorAuthenticated := ambassador.Use(middlewares.IsAuthenticated)
 	ambassadorAuthenticated.Get("user", controllers.User)
 	ambassadorAuthenticated.Post("logout", controllers.Logout)
 	ambassadorAuthenticated.Put("users/info", controllers.UpdateProfile)
 	ambassadorAuthenticated.Put("users/password", controllers.UpdatePassword)
-	//TODO:
-	//products/frontend
-	//products/backend
-	//links
-	//stats
-	//ranks
+	ambassadorAuthenticated.Post("link", controllers.CreateLink)
+	ambassadorAuthenticated.Get("stats", controllers.Stats)
+	ambassadorAuthenticated.Get("rankings", controllers.Rankings)
+
+	checkout := api.Group("checkout")
+	checkout.Get("links/:code", controllers.GetLinks)
+	checkout.Post("order", controllers.CreateOrders)
+	checkout.Post("order/confirm", controllers.CompleteOrder)
+
 }

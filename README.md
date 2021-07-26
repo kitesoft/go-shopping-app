@@ -1,6 +1,21 @@
-<a href="#"><img width="100%" src="https://raw.githubusercontent.com/titusdishon/titusdishon/master/golang.svg" height="200px"/></a>
+<a href="#"><img width="100%" src="https://raw.githubusercontent.com/titusdishon/titusdishon/master/golang.svg" height="200px"/>
+</a>
+<a href="#"><img width="100%" src="https://raw.githubusercontent.com/titusdishon/titusdishon/master/docker.svg"  height="200px"/>
+</a>
+<a href="#"><img width="100%" src="https://raw.githubusercontent.com/titusdishon/titusdishon/master/mysql.svg" height="200px"/>
+</a>
+<p>I created this project as a way of learning best practices while developing go projects. In the process I was able to create APIs with golang, fiber, mysql and docker. I used docker to enable my project to work well in different environments.I also learned how to document go apis using swagger, creating authentication framework with cookies and maintain a clean architecture.</p>
 
-<h3 style="color:#33A8FF"><u>What you need to run the project</u></h3>
+## What is this project about?
+### This project has two types of users:
+<ul>
+<li>Admin <i>The administrative user who does system configuration</i> and,</li>
+<li>Ambassador <i>A user who advertises products belonging to the site </i> </li>
+</ul>
+The ambassodar user will be ranked depending on the number of orders they are tagged in as evaluated by the admin user.
+
+
+<h3 style="color:#33A8FF"><u>You will need the following to run the project</u></h3>
 
 - visual studio: **https://www.docker.com/get-started**
 - Go v:1.16: **https://go.dev/**
@@ -143,3 +158,10 @@ For more quick introduction to go please visit the link [go documentation](https
 ### Run command inside the docker container 
 `docker-compose exec backend sh `
 `exit` to exit the docker container shell 
+
+### Adding swagger documentation. 
+When working in large teams there is need for clear documentation on what each endpoint(API) does and the paramaters it required.
+ Once you run this project you will be able to get full swagger documentation when you open the address  [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html) on your browser.
+ 
+ <a href="#"><img width="100%" src="https://raw.githubusercontent.com/titusdishon/titusdishon/master/swagger.png" height="500px"/>
+</a>
