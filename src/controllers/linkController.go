@@ -1,10 +1,13 @@
 package controllers
 
 import (
+	"fmt"
 	"shop/src/database"
+	"shop/src/middlewares"
 	"shop/src/models"
 	"strconv"
 
+	"github.com/bxcodec/faker/v3"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -18,4 +21,54 @@ func Link(c *fiber.Ctx) error {
 		links[i].Orders = orders
 	}
 	return c.JSON(links)
+}
+
+type CreateLinkRequest struct {
+	Products []int
+}
+
+func CreateLink(c *fiber.Ctx) error {
+	var request CreateLinkRequest
+	if err := c.BodyParser(&request); err != nil {
+		return err
+	}
+	id, _ := middlewares.GetUserId(c)
+	link := models.Link{
+		UserId: id,
+		Code:   faker.Username(),
+	}
+	fmt.Println(id)
+	for _, productId := range request.Products {
+		product := models.Product{}
+		product.Id = uint(productId)
+		link.Products = append(link.Products, product)
+	}
+	database.DB.Create(&link)
+	return c.JSON(link)
+}
+func Stats(c *fiber.Ctx) error {
+	id, _ := middlewares.GetUserId(c)
+	var links []models.Link
+	database.DB.Find(&links, models.Link{
+		UserId: id,
+	})
+	var result []interface{}
+	var orders []models.Order
+
+	for _, link := range links {
+		database.DB.Preload("OrderItems").Find(&orders, models.Order{
+			Code:     link.Code,
+			Complete: true,
+		})
+		revenue := 0.0
+		for _, order := range orders {
+			revenue += order.TotalAmount()
+		}
+		result = append(result, fiber.Map{
+			"code":    link.Code,
+			"count":   len(link.Orders),
+			"revenue": revenue,
+		})
+	}
+	return c.JSON(result)
 }

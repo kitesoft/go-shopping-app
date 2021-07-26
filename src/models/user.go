@@ -24,6 +24,10 @@ func (user *User) ComparePassword(password string) error {
 	return bcrypt.CompareHashAndPassword(user.Password, []byte(password))
 }
 
+func (user *User) Name() string {
+	return user.FirstName + " " + user.LastName
+}
+
 //creating aliases
 //used to add extra functions to the type.
 type Admin User
