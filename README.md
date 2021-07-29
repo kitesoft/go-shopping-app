@@ -151,7 +151,7 @@ func main() {
 
 ```
 
-When you open your the address [http://localhost:8080/](http://localhost:8080/) on your browser you should serr the words `Hi there`
+When you open the address [http://localhost:8080/](http://localhost:8080/) on your browser you should serr the words `Hi there`
 For more quick introduction to go please visit the link [go documentation](https://golang.org/doc/)
 
 
