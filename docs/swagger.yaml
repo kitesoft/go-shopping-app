@@ -114,6 +114,19 @@ definitions:
       password:
         type: string
     type: object
+  models.UserRegister:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+    type: object
 info:
   contact:
     email: your@mail.com
@@ -176,14 +189,14 @@ paths:
         name: user_attrs
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/models.UserRegister'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/models.UserRegister'
       summary: create a user
       tags:
       - User

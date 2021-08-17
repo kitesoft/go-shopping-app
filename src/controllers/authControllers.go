@@ -16,8 +16,8 @@ import (
 // @Tags User, Ambassador
 // @Accept json
 // @Produce json
-// @Param user_attrs body models.User true "User attributes"
-// @Success 200 {object} models.User
+// @Param user_attrs body models.UserRegister true "User attributes"
+// @Success 200 {object} models.UserRegister
 // @Router /admin/register [post]
 func Register(c *fiber.Ctx) error {
 	var data map[string]string

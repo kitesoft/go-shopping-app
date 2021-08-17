@@ -27,7 +27,10 @@ func CreateProduct(c *fiber.Ctx) error {
 	}
 	database.DB.Create(&product)
 	go database.ClearCache("products_backend", "products_frontend")
-	return c.JSON(product)
+	return c.JSON(fiber.Map{
+		"StatusCode": http.StatusOK,
+		"message":    "Created successfully",
+	})
 }
 
 func GetProduct(c *fiber.Ctx) error {
@@ -43,6 +46,7 @@ func DeleteAProduct(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
 	product.Id = uint(id)
 	go database.ClearCache("products_backend", "products_frontend")
+	database.DB.Model(&product).Delete(&product)
 	return c.JSON(fiber.Map{
 		"StatusCode": http.StatusOK,
 		"message":    "Deleted successfully",

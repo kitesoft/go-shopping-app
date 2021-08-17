@@ -19,6 +19,14 @@ type UserLogin struct {
 	Password string `json:"password"`
 }
 
+type UserRegister struct {
+	FirstName       string `json:"first_name"`
+	LastName        string `json:"last_name"`
+	Email           string `json:"email" gorm:"unique"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirm_password"`
+}
+
 func (user *User) SetPassword(password string) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), 12)
 	user.Password = hashedPassword

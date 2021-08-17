@@ -165,3 +165,6 @@ When working in large teams there is need for clear documentation on what each e
  
  <a href="#"><img width="100%" src="https://raw.githubusercontent.com/titusdishon/titusdishon/master/swagger.png" height="500px"/>
 </a>
+
+### swag init 
+### export PATH=$(go env GOPATH)/bin:$PATH
