@@ -22,7 +22,8 @@ const Links = (props: any) => {
   const [links, setUsers] = useState<Link[] | null>(null);
   const [query, setQuery] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(links?.length || 5);
+
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(`users/${props.match.params.id}/links`, {
@@ -33,12 +34,14 @@ const Links = (props: any) => {
   }, [props.match.params.id]);
 
   const filteredData = useMemo(() => {
-    if (query) {
-      return links?.filter(
-        (item) => item.id === parseInt(query) || item.code === parseInt(query)
-      );
-    } else {
-      return links;
+    if (links) {
+      if (query) {
+        return links?.filter(
+          (item) => item.id === parseInt(query) || item.code === parseInt(query)
+        );
+      } else {
+        return links;
+      }
     }
   }, [query, links]);
 
@@ -54,45 +57,47 @@ const Links = (props: any) => {
           onChange={(e: any) => setQuery(e.target.value)}
         />
       </div>
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>#</TableCell>
-              <TableCell>ID</TableCell>
-              <TableCell>Code</TableCell>
-              <TableCell>Orders</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredData
-              ?.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-              .map((link) => (
-                <TableRow key={link?.id}>
-                  <TableCell>#</TableCell>
-                  <TableCell>{link?.id}</TableCell>
-                  <TableCell>{link.code}</TableCell>
-                  <TableCell>{link?.orders?.length}</TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-          <TablePagination
-            component="div"
-            count={filteredData?.length || 0}
-            page={1}
-            onPageChange={(e: any, newPage: number) => setPage(newPage)}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={(e: any) => {
-              setRowsPerPage(e.target.value);
-              setPage(1);
-            }}
-            rowsPerPageOptions={[1, 2]}
-          />
-        </Table>
-      </TableContainer>
-      {filteredData && filteredData.length === 0 && (
+
+      {filteredData && filteredData.length === 0 ? (
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>Code</TableCell>
+                <TableCell>Orders</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredData
+                ?.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                .map((link) => (
+                  <TableRow key={link?.id}>
+                    <TableCell>#</TableCell>
+                    <TableCell>{link?.id}</TableCell>
+                    <TableCell>{link.code}</TableCell>
+                    <TableCell>{link?.orders?.length}</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+            <TablePagination
+              component="div"
+              count={filteredData?.length || links?.length || 0}
+              page={1}
+              onPageChange={(e: any, newPage: number) => setPage(newPage)}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={(e: any) => {
+                setRowsPerPage(e.target.value);
+                setPage(1);
+              }}
+              rowsPerPageOptions={[1, 2]}
+            />
+          </Table>
+        </TableContainer>
+      ) : (
         <Alert severity="info">No records found</Alert>
       )}
     </Layout>

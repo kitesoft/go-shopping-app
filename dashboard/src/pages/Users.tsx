@@ -25,6 +25,7 @@ const Users = () => {
   const [query, setQuery] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+
   useEffect(() => {
     (async () => {
       const { data } = await axios.get("ambassadors", {
@@ -60,51 +61,53 @@ const Users = () => {
           onChange={(e: any) => setQuery(e.target.value)}
         />
       </div>
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>#</TableCell>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredData
-              ?.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-              .map((user) => (
-                <TableRow key={user?.id}>
-                  <TableCell>#</TableCell>
-                  <TableCell>{user?.id}</TableCell>
-                  <TableCell>
-                    {user.first_name} {user.last_name}
-                  </TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
-                    <Link to={`users/${user.id}/links`}>view</Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-          <TableFooter>
-            <TablePagination
-              component="div"
-              count={filteredData?.length || 0}
-              page={page}
-              onPageChange={(e: any, newPage: number) => setPage(newPage)}
-              rowsPerPage={rowsPerPage}
-              onRowsPerPageChange={(e: any) => {
-                setRowsPerPage(e.target.value);
-                setPage(1);
-              }}
-              rowsPerPageOptions={[]}
-            />
-          </TableFooter>
-        </Table>
-      </TableContainer>
-      {filteredData && filteredData.length === 0 && (
+
+      {filteredData && filteredData.length === 0 ? (
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredData
+                ?.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                .map((user) => (
+                  <TableRow key={user?.id}>
+                    <TableCell>#</TableCell>
+                    <TableCell>{user?.id}</TableCell>
+                    <TableCell>
+                      {user.first_name} {user.last_name}
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <Link to={`users/${user.id}/links`}>view</Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+            <TableFooter>
+              <TablePagination
+                component="div"
+                count={filteredData?.length || 0}
+                page={page}
+                onPageChange={(e: any, newPage: number) => setPage(newPage)}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={(e: any) => {
+                  setRowsPerPage(e.target.value);
+                  setPage(1);
+                }}
+                rowsPerPageOptions={[]}
+              />
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      ) : (
         <Alert severity="info">No records found</Alert>
       )}
     </Layout>

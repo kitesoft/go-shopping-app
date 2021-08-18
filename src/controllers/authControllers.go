@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"net/http"
 	"shop/src/database"
 	"shop/src/middlewares"
 	"shop/src/models"
@@ -104,6 +105,7 @@ func Login(c *fiber.Ctx) error {
 	}
 	c.Cookie(&cookie)
 	return c.JSON(fiber.Map{
+		"StatusCode": http.StatusOK,
 		"message": "success",
 		"user":    user,
 	})
@@ -177,7 +179,11 @@ func UpdateProfile(c *fiber.Ctx) error {
 	user.Id = id
 
 	database.DB.Model(&user).Updates(&user)
-	return c.JSON(user)
+	return c.JSON(fiber.Map{
+		"StatusCode": http.StatusOK,
+		"message": "success",
+		"user":    user,
+	})
 
 }
 
@@ -209,6 +215,7 @@ func UpdatePassword(c *fiber.Ctx) error {
 	user.SetPassword(data["password"])
 	database.DB.Model(&user).Updates(&user)
 	return c.JSON(fiber.Map{
+		"StatusCode": http.StatusOK,
 		"message": "success",
 	})
 }

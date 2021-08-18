@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { User } from "../models/user";
 
 const Nav = (props: { user: User | null }) => {
-  const logout = async () =>
-    await axios.post("logout", null, { withCredentials: true });
+  const logoutUser = async () =>
+    await axios.post("logout", null, { withCredentials: true }).then(() => {});
   return (
     <header className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
       <Link className="navbar-brand col-md-3 col-lg-2 me-0 px-3" to="/">
@@ -18,7 +18,7 @@ const Nav = (props: { user: User | null }) => {
         <Link
           to="/login"
           className="p-2 text-white text-decoration-none"
-          onClick={logout}
+          onClick={logoutUser}
         >
           Sign Out
         </Link>

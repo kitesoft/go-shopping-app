@@ -2,7 +2,6 @@ import { Button, TextareaAutosize, TextField } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import Layout from "../components/Layout";
 import { Product } from "../models/product";
 import history from "../components/history";
@@ -65,56 +64,59 @@ const ProductForm = (props: any) => {
 
   return (
     <Layout>
-      <form
-        className="mt-3"
-        onSubmit={(event) => {
-          onSubmit();
-          event?.preventDefault();
-        }}
-      >
-        {status && <Alert severity="success">{status}</Alert>}
-        <div className="mb-3">
-          <TextField
-            label="Title"
-            name="title"
-            required
-            value={product.title || ""}
-            onChange={onChange}
-          />
-        </div>
-        <div className="mb-3">
-          <TextareaAutosize
-            minRows={4}
-            placeholder="Description"
-            name="description"
-            required
-            value={product.description || ""}
-            onChange={onChange}
-          />
-        </div>
-        <div className="mb-3">
-          <TextField
-            label="Image"
-            name="image"
-            required
-            value={product.image || ""}
-            onChange={onChange}
-          />
-        </div>
-        <div className="mb-3">
-          <TextField
-            label="Price"
-            type="number"
-            required
-            name="price"
-            value={product.price || ""}
-            onChange={onChange}
-          />
-        </div>
-        <Button variant="contained" color="primary" type="submit">
-          {!productId ? " Submit" : "update"}
-        </Button>
-      </form>
+      <div className="m-auto col-lg-6 col-md-6 col-sm-12">
+        <h4>{productId ? "Update" : "Create"} Product</h4>
+        <form
+          className="mt-3"
+          onSubmit={(event) => {
+            onSubmit();
+            event?.preventDefault();
+          }}
+        >
+          {status && <Alert severity="success">{status}</Alert>}
+          <div className="mb-3">
+            <TextField
+              label="Title"
+              name="title"
+              required
+              value={product.title || ""}
+              onChange={onChange}
+            />
+          </div>
+          <div className="mb-3">
+            <TextareaAutosize
+              minRows={4}
+              placeholder="Description"
+              name="description"
+              required
+              value={product.description || ""}
+              onChange={onChange}
+            />
+          </div>
+          <div className="mb-3">
+            <TextField
+              label="Image"
+              name="image"
+              required
+              value={product.image || ""}
+              onChange={onChange}
+            />
+          </div>
+          <div className="mb-3">
+            <TextField
+              label="Price"
+              type="number"
+              required
+              name="price"
+              value={product.price || ""}
+              onChange={onChange}
+            />
+          </div>
+          <Button variant="contained" color="primary" type="submit">
+            {!productId ? " Submit" : "update"}
+          </Button>
+        </form>
+      </div>
     </Layout>
   );
 };

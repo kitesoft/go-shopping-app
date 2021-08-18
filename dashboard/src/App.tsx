@@ -9,6 +9,7 @@ import Products from "./pages/Products";
 import ProductForm from "./pages/ProductForm";
 import history from "./components/history";
 import Orders from "./pages/Orders";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Router history={history}>
         <Route path={"/"} exact component={Users} />
         <Route path={"/login"} component={Login} />
+        <Route path={"/profile"} component={Profile} />
         <Route path={"/products"} exact component={Products} />
         <Route path={"/products/new"} component={ProductForm} />
         <Route path={"/products/update/:productId"} component={ProductForm} />

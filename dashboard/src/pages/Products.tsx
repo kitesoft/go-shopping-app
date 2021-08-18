@@ -92,78 +92,80 @@ const Products = () => {
           Add New
         </Button>
       </Link>
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>#</TableCell>
-              <TableCell>ID</TableCell>
-              <TableCell>Image</TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Action</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredData
-              ?.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-              .map((product) => (
-                <TableRow key={product?.id}>
-                  <TableCell>#</TableCell>
-                  <TableCell>{product?.id}</TableCell>
-                  <TableCell>
-                    <img
-                      src={product?.image}
-                      alt={product?.title}
-                      width={50}
-                      height={50}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {product.title} {product.title}
-                  </TableCell>
-                  <TableCell>{product.description}</TableCell>
-                  <TableCell>{product.price}</TableCell>
-                  <TableCell>
-                    <Button
-                      onClick={() =>
-                        deleteProduct(product?.id ? product?.id : 0)
-                      }
-                      color="secondary"
-                      variant="contained"
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Link to={`/products/update/${product?.id}`}>
-                      <Button color="primary" variant="contained">
-                        Update
+
+      {filteredData && filteredData.length === 0 ? (
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>Image</TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Action</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredData
+                ?.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                .map((product) => (
+                  <TableRow key={product?.id}>
+                    <TableCell>#</TableCell>
+                    <TableCell>{product?.id}</TableCell>
+                    <TableCell>
+                      <img
+                        src={product?.image}
+                        alt={product?.title}
+                        width={50}
+                        height={50}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {product.title} {product.title}
+                    </TableCell>
+                    <TableCell>{product.description}</TableCell>
+                    <TableCell>{product.price}</TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() =>
+                          deleteProduct(product?.id ? product?.id : 0)
+                        }
+                        color="secondary"
+                        variant="contained"
+                      >
+                        Delete
                       </Button>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-          <TableFooter className={classes.footer}>
-            <TablePagination
-              count={filteredData?.length || 0}
-              page={page}
-              onPageChange={(e: any, newPage: number) => setPage(newPage)}
-              rowsPerPage={rowsPerPage}
-              onRowsPerPageChange={(e: any) => {
-                setRowsPerPage(e.target.value);
-                setPage(1);
-              }}
-              className={classes.footer}
-              rowsPerPageOptions={[]}
-            />
-          </TableFooter>
-        </Table>
-      </TableContainer>
-      {filteredData && filteredData.length === 0 && (
+                    </TableCell>
+                    <TableCell>
+                      <Link to={`/products/update/${product?.id}`}>
+                        <Button color="primary" variant="contained">
+                          Update
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+            <TableFooter className={classes.footer}>
+              <TablePagination
+                count={filteredData?.length || 0}
+                page={page}
+                onPageChange={(e: any, newPage: number) => setPage(newPage)}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={(e: any) => {
+                  setRowsPerPage(e.target.value);
+                  setPage(1);
+                }}
+                className={classes.footer}
+                rowsPerPageOptions={[]}
+              />
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      ) : (
         <Alert severity="info">No records found</Alert>
       )}
     </Layout>

@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"github.com/joho/godotenv"
+	"log"
+	"os"
 	"shop/src/database"
 	"shop/src/routes"
 
@@ -10,7 +14,7 @@ import (
 
 // @title API
 // @version 1.0
-// @description This is an auto-generated API Docs.
+// @description Ambassondar app swagger documentation.
 // @contact.name API Support
 // @contact.email titusdishon@gmail.com
 // @license.name Apache 2.0
@@ -20,6 +24,12 @@ import (
 // @BasePath /api
 
 func main() {
+	err:=godotenv.Load(".env")
+	if err!=nil {
+		log.Fatalf("error loading .env file")
+	}
+    cloudinaryApi := os.Getenv("CLOUDINARY_API")
+	fmt.Println(cloudinaryApi)
 	database.Connect()
 	database.AutoMigrate()
 	database.SetupRedis()

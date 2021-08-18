@@ -46,7 +46,6 @@ const Orders = () => {
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [query, setQuery] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
-  const [status, setStatus] = useState<string | null>(null);
   const [activeOrder, setActiveOrder] = useState<number | null>(null);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   useEffect(() => {
@@ -98,93 +97,94 @@ const Orders = () => {
           onChange={(e: any) => setQuery(e.target.value)}
         />
       </div>
-      {status && <Alert severity="success">{status}</Alert>}
       <Link to="/orders/new" className={classes.link}>
         {" "}
         <Button color="primary" variant="contained">
           Add New
         </Button>
       </Link>
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>#</TableCell>
-              <TableCell>ID</TableCell>
-              <TableCell>Transaction ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Ambassandor Email</TableCell>
-              <TableCell>Country</TableCell>
-              <TableCell>City</TableCell>
-              <TableCell>Total</TableCell>
-              <TableCell>Order Items</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredData
-              ?.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-              .map((order) => (
-                <TableRow key={order?.id}>
-                  <TableCell>#</TableCell>
-                  <TableCell>{order?.id}</TableCell>
-                  <TableCell>{order?.transaction_id}</TableCell>
-                  <TableCell>{order.name}</TableCell>
-                  <TableCell>{order.email}</TableCell>
-                  <TableCell>{order.ambassador_email}</TableCell>
-                  <TableCell>{order.country}</TableCell>
-                  <TableCell>{order.city}</TableCell>
-                  <TableCell>{order.total.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <Typography
-                      aria-owns={open ? "mouse-over-popover" : undefined}
-                      aria-haspopup="true"
-                      className={classes.view}
-                      onMouseEnter={(
-                        e: React.MouseEvent<HTMLElement, MouseEvent>
-                      ) => handlePopoverOpen(e, order?.id)}
-                      onMouseLeave={handlePopoverClose}
-                    >
-                      View
-                    </Typography>
-                    <OrderItem
-                      total={order.total.toFixed(2)}
-                      orderId={order?.id}
-                      active={activeOrder}
-                      data={order?.order_item}
-                      open={open}
-                      anchorEl={anchorEl}
-                      handlePopoverClose={handlePopoverClose}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Link to={`/orders/update/${order?.id}`}>
-                      <Button color="primary" variant="contained">
-                        Update
-                      </Button>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-          <TableFooter className={classes.footer}>
-            <TablePagination
-              count={filteredData?.length || 0}
-              page={page}
-              onPageChange={(e: any, newPage: number) => setPage(newPage)}
-              rowsPerPage={rowsPerPage}
-              onRowsPerPageChange={(e: any) => {
-                setRowsPerPage(e.target.value);
-                setPage(1);
-              }}
-              className={classes.footer}
-              rowsPerPageOptions={[]}
-            />
-          </TableFooter>
-        </Table>
-      </TableContainer>
-      {filteredData && filteredData.length === 0 && (
+
+      {filteredData && filteredData.length === 0 ? (
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>Transaction ID</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Ambassandor Email</TableCell>
+                <TableCell>Country</TableCell>
+                <TableCell>City</TableCell>
+                <TableCell>Total</TableCell>
+                <TableCell>Order Items</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredData
+                ?.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                .map((order) => (
+                  <TableRow key={order?.id}>
+                    <TableCell>#</TableCell>
+                    <TableCell>{order?.id}</TableCell>
+                    <TableCell>{order?.transaction_id}</TableCell>
+                    <TableCell>{order.name}</TableCell>
+                    <TableCell>{order.email}</TableCell>
+                    <TableCell>{order.ambassador_email}</TableCell>
+                    <TableCell>{order.country}</TableCell>
+                    <TableCell>{order.city}</TableCell>
+                    <TableCell>{order.total.toFixed(2)}</TableCell>
+                    <TableCell>
+                      <Typography
+                        aria-owns={open ? "mouse-over-popover" : undefined}
+                        aria-haspopup="true"
+                        className={classes.view}
+                        onMouseEnter={(
+                          e: React.MouseEvent<HTMLElement, MouseEvent>
+                        ) => handlePopoverOpen(e, order?.id)}
+                        onMouseLeave={handlePopoverClose}
+                      >
+                        View
+                      </Typography>
+                      <OrderItem
+                        total={order.total.toFixed(2)}
+                        orderId={order?.id}
+                        active={activeOrder}
+                        data={order?.order_item}
+                        open={open}
+                        anchorEl={anchorEl}
+                        handlePopoverClose={handlePopoverClose}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Link to={`/orders/update/${order?.id}`}>
+                        <Button color="primary" variant="contained">
+                          Update
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+            <TableFooter className={classes.footer}>
+              <TablePagination
+                count={filteredData?.length || 0}
+                page={page}
+                onPageChange={(e: any, newPage: number) => setPage(newPage)}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={(e: any) => {
+                  setRowsPerPage(e.target.value);
+                  setPage(1);
+                }}
+                className={classes.footer}
+                rowsPerPageOptions={[]}
+              />
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      ) : (
         <Alert severity="info">No records found</Alert>
       )}
     </Layout>

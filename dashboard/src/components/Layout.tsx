@@ -1,34 +1,21 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { User } from "../models/user";
+import { RootState } from "../redux/configureStore";
 import Menu from "./Menu";
 import Nav from "./Nav";
 
 const Layout = (props: any) => {
-  const [isNotAuthenticated, setNotAuthenticated] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null);
   const history = useHistory();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await axios.get("user", { withCredentials: true });
-        setNotAuthenticated(false);
-        setUser(data);
-      } catch (error) {
-        setNotAuthenticated(true);
-      }
-    })();
-  }, []);
-
-  if (isNotAuthenticated) {
+  const user = useSelector((state: RootState) => state.user);
+  if (!user.isAuthenticated) {
     history.push("/login");
   }
   return (
     <div>
       {" "}
-      {user && <Nav user={user} />}
+      {user && <Nav user={null} />}
       <div className="container-fluid">
         <div className="row">
           <Menu />
