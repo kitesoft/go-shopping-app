@@ -62,7 +62,10 @@ func UpdateProduct(c *fiber.Ctx) error {
 	}
 	database.DB.Model(&product).Updates(&product)
 	go database.ClearCache("products_backend", "products_frontend")
-	return c.JSON(product)
+	return c.JSON(fiber.Map{
+		"StatusCode": http.StatusOK,
+		"message":    "Updated successfully",
+	})
 }
 
 func ProductFrontend(c *fiber.Ctx) error {
