@@ -1,11 +1,13 @@
-import { Button, TextField } from "@material-ui/core";
+import { Button, TextareaAutosize, TextField } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import Layout from "../components/Layout";
 import { Product } from "../models/product";
+import history from "../components/history";
 
-const ProductForm = () => {
+const ProductForm = (props: any) => {
   const [product, setData] = useState<Product>({
     title: "",
     description: "",
@@ -13,6 +15,24 @@ const ProductForm = () => {
     price: "",
   });
   const [status, setStatus] = useState<string | null>(null);
+  const productId = props.match.params.productId;
+
+  useEffect(() => {
+    if (productId) {
+      (async () => {
+        const { data } = await axios.get(`product/${productId}`, {
+          withCredentials: true,
+        });
+        setData({
+          id: data?.id,
+          title: data?.title,
+          description: data?.description,
+          image: data?.image,
+          price: data?.price,
+        });
+      })();
+    }
+  }, [productId]);
 
   const onChange = (e: any) => {
     setData({
@@ -22,8 +42,8 @@ const ProductForm = () => {
   };
 
   const onSubmit = async () => {
-    const { data } = await axios.post(
-      "product",
+    const { data } = await (!productId ? axios.post : axios.put)(
+      !productId ? "product" : `product/${productId}`,
       {
         title: product.title,
         description: product.description,
@@ -35,10 +55,11 @@ const ProductForm = () => {
       }
     );
     if (data?.StatusCode === 200) {
-      setStatus(data?.message);
+      setStatus(data?.message || "success");
     }
     setTimeout(() => {
       setStatus(null);
+      history.push("/products");
     }, 2000);
   };
 
@@ -56,14 +77,17 @@ const ProductForm = () => {
           <TextField
             label="Title"
             name="title"
+            required
             value={product.title || ""}
             onChange={onChange}
           />
         </div>
         <div className="mb-3">
-          <TextField
-            label="Description"
+          <TextareaAutosize
+            minRows={4}
+            placeholder="Description"
             name="description"
+            required
             value={product.description || ""}
             onChange={onChange}
           />
@@ -72,6 +96,7 @@ const ProductForm = () => {
           <TextField
             label="Image"
             name="image"
+            required
             value={product.image || ""}
             onChange={onChange}
           />
@@ -80,13 +105,14 @@ const ProductForm = () => {
           <TextField
             label="Price"
             type="number"
+            required
             name="price"
             value={product.price || ""}
             onChange={onChange}
           />
         </div>
         <Button variant="contained" color="primary" type="submit">
-          Submit
+          {!productId ? " Submit" : "update"}
         </Button>
       </form>
     </Layout>

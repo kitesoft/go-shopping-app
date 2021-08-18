@@ -12,7 +12,23 @@ const Menu = () => {
           <li className="nav-item">
             <Link className="nav-link active" aria-current="page" to="/">
               <span data-feather="home" />
-              Dashboard
+              users
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link
+              className="nav-link active"
+              aria-current="page"
+              to="/products"
+            >
+              <span data-feather="home" />
+              products
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link active" aria-current="page" to="/orders">
+              <span data-feather="home" />
+              orders
             </Link>
           </li>
         </ul>

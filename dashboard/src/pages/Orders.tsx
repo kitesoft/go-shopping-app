@@ -9,17 +9,20 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Theme,
+  Typography,
 } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import TableContainer from "@material-ui/core/TableContainer";
 import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
 import Layout from "../components/Layout";
-import { Product } from "../models/product";
+import { Order } from "../models/order";
 import { Link } from "react-router-dom";
 import Alert from "../utils/Alert";
+import OrderItem from "./OrderItems";
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     footer: {
       width: "100%",
@@ -28,65 +31,75 @@ const useStyles = makeStyles(() =>
     link: {
       textDecoration: "none",
     },
+    view: {
+      cursor: "pointer",
+      padding: theme.spacing(1),
+      "&:hover": {
+        backgroundColor: "#e3e1da",
+      },
+    },
   })
 );
 
-const Products = () => {
+const Orders = () => {
   const classes = useStyles();
-  const [products, setProducts] = useState<Product[] | null>(null);
+  const [orders, setOrders] = useState<Order[] | null>(null);
   const [query, setQuery] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
   const [status, setStatus] = useState<string | null>(null);
+  const [activeOrder, setActiveOrder] = useState<number | null>(null);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   useEffect(() => {
     (async () => {
-      const { data } = await axios.get("products", {
+      const { data } = await axios.get("orders", {
         withCredentials: true,
       });
-      setProducts(data);
+      setOrders(data);
     })();
   }, []);
 
   const filteredData = useMemo(() => {
     if (query) {
-      return products?.filter(
+      return orders?.filter(
         (item) =>
-          item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.description.toLowerCase().includes(query.toLowerCase())
+          item.name.toLowerCase().includes(query.toLowerCase()) ||
+          item.email.toLowerCase().includes(query.toLowerCase())
       );
     } else {
-      return products;
+      return orders;
     }
-  }, [query, products]);
+  }, [query, orders]);
 
-  const deleteProduct = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      const { data } = await axios.delete(`product/${id}`, {
-        withCredentials: true,
-      });
-      if (data?.StatusCode === 200) {
-        setStatus(data?.message);
-      }
-      setTimeout(() => {
-        setStatus(null);
-      }, 2000);
-      setProducts(products?.filter((p) => p.id !== id) || products);
-    }
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const open = Boolean(anchorEl);
+
+  const handlePopoverOpen = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    id: any
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setActiveOrder(id);
   };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+    setActiveOrder(null);
+  };
+
   return (
     <Layout>
-      <h2>Products</h2>
+      <h2>Orders</h2>
       <div className="form-group mt-2 mb-2 col-sm-9 col-lg-3 col-md-4 ">
         <input
           type="text"
           className="form-control"
           value={query || ""}
-          placeholder="Search product"
+          placeholder="Search order"
           onChange={(e: any) => setQuery(e.target.value)}
         />
       </div>
       {status && <Alert severity="success">{status}</Alert>}
-      <Link to="/products/new" className={classes.link}>
+      <Link to="/orders/new" className={classes.link}>
         {" "}
         <Button color="primary" variant="contained">
           Add New
@@ -98,47 +111,55 @@ const Products = () => {
             <TableRow>
               <TableCell>#</TableCell>
               <TableCell>ID</TableCell>
-              <TableCell>Image</TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell>Transaction ID</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Ambassandor Email</TableCell>
+              <TableCell>Country</TableCell>
+              <TableCell>City</TableCell>
+              <TableCell>Total</TableCell>
+              <TableCell>Order Items</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredData
               ?.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-              .map((product) => (
-                <TableRow key={product?.id}>
+              .map((order) => (
+                <TableRow key={order?.id}>
                   <TableCell>#</TableCell>
-                  <TableCell>{product?.id}</TableCell>
+                  <TableCell>{order?.id}</TableCell>
+                  <TableCell>{order?.transaction_id}</TableCell>
+                  <TableCell>{order.name}</TableCell>
+                  <TableCell>{order.email}</TableCell>
+                  <TableCell>{order.ambassador_email}</TableCell>
+                  <TableCell>{order.country}</TableCell>
+                  <TableCell>{order.city}</TableCell>
+                  <TableCell>{order.total.toFixed(2)}</TableCell>
                   <TableCell>
-                    <img
-                      src={product?.image}
-                      alt={product?.title}
-                      width={50}
-                      height={50}
+                    <Typography
+                      aria-owns={open ? "mouse-over-popover" : undefined}
+                      aria-haspopup="true"
+                      className={classes.view}
+                      onMouseEnter={(
+                        e: React.MouseEvent<HTMLElement, MouseEvent>
+                      ) => handlePopoverOpen(e, order?.id)}
+                      onMouseLeave={handlePopoverClose}
+                    >
+                      View
+                    </Typography>
+                    <OrderItem
+                      total={order.total.toFixed(2)}
+                      orderId={order?.id}
+                      active={activeOrder}
+                      data={order?.order_item}
+                      open={open}
+                      anchorEl={anchorEl}
+                      handlePopoverClose={handlePopoverClose}
                     />
                   </TableCell>
                   <TableCell>
-                    {product.title} {product.title}
-                  </TableCell>
-                  <TableCell>{product.description}</TableCell>
-                  <TableCell>{product.price}</TableCell>
-                  <TableCell>
-                    <Button
-                      onClick={() =>
-                        deleteProduct(product?.id ? product?.id : 0)
-                      }
-                      color="secondary"
-                      variant="contained"
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Link to={`/products/update/${product?.id}`}>
+                    <Link to={`/orders/update/${order?.id}`}>
                       <Button color="primary" variant="contained">
                         Update
                       </Button>
@@ -170,4 +191,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Orders;
